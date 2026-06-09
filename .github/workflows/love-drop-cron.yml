@@ -1,0 +1,16 @@
+name: Love Drop Cron
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+jobs:
+  send-love-drop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger love drop
+        run: |
+          curl --fail --show-error --silent \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/ai/love-drop"
