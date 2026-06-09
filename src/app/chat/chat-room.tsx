@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Interactions } from "@/components/interactions";
 import { supabase } from "@/lib/supabase";
 import type { ChatMessageRecord } from "@/lib/chat";
 
@@ -305,6 +306,15 @@ export function ChatRoom({
                       </span>
                     ) : null}
                   </div>
+                  {!message.pending && !message.failed ? (
+                    <Interactions
+                      targetType="chat_message"
+                      targetId={message.id}
+                      path={`/chat?item=${message.id}`}
+                      title={message.context_title || message.context_type}
+                      compact
+                    />
+                  ) : null}
                   {!message.pending && !message.failed ? (
                     <button
                       type="button"

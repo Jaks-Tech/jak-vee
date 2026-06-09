@@ -12,5 +12,6 @@ export async function POST(request: NextRequest) {
 
   response.cookies.set("jak_vee_session", "", cookieOptions);
   response.cookies.set("jak_vee_person", "", cookieOptions);
+  response.cookies.set("jak_vee_private_memories", "", cookieOptions);
   return response;
 }

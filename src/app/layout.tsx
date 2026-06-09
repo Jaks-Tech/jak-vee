@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Jak & Vee | Forever Us",
+  title: "J/V Space",
   description:
     "A private romantic web space for Jak and Vee to keep memories, photos, notes, links, and conversations.",
 };

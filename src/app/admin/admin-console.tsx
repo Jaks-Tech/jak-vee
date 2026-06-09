@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { AdminEntity, AdminField, AdminRow } from "@/lib/admin";
-import { createAdminRow, deleteAdminRow, updateAdminRow } from "./actions";
+import { createAdminRow, deleteAdminRow, testLoveDrop, updateAdminRow } from "./actions";
 
 type AdminSection = {
   entity: AdminEntity;
@@ -145,6 +145,18 @@ export function AdminConsole({
           <p className="mt-4 rounded-2xl bg-[#FFF7FA] px-4 py-3 text-sm font-semibold text-[#a1435e]">
             {error}
           </p>
+        ) : null}
+
+        {entity.key === "love_drops" ? (
+          <form action={testLoveDrop} className="mt-5 rounded-3xl border border-[#FFD6E8] bg-[#FFF7FA] p-4">
+            <p className="text-sm font-semibold text-[#8c4058]">
+              Send a test love drop to Discord now.
+            </p>
+            <button className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#FF8FAB] px-5 py-3 text-sm font-semibold text-white">
+              <Sparkles size={16} />
+              Test love drop
+            </button>
+          </form>
         ) : null}
 
         <details className="mt-5 min-w-0 rounded-3xl border border-[#FFD6E8] bg-[#FFF7FA] p-4">

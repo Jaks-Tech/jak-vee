@@ -16,10 +16,10 @@ export default async function AdminPage({
         <div className="mb-8 max-w-3xl">
           <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#a1435e]">
             <ShieldCheck size={16} />
-            Admin console
+            Where we&apos;re at
           </p>
           <h1 className="mt-2 text-4xl font-semibold text-[#2d1b22]">
-            Control the whole Jak & Vee space.
+            Feed our little space, and keep it tidy
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#765061]">
             Choose a page from the side navigation, then open the item you want

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+
 import {
   ArrowRight,
   BookOpen,
@@ -15,9 +16,12 @@ import { PageShell } from "@/components/page-shell";
 import { DailySummaryCard } from "@/components/daily-summary-card";
 import { RotatingMemories } from "@/components/rotating-memories";
 import { RotatingLoveNotes } from "@/components/rotating-love-notes";
+import { LoveDropOverlay } from "@/components/love-drop-overlay";
+import { LoveDropsHome } from "@/components/love-drops-home";
 import { getAnniversaryReminders } from "@/lib/anniversaries";
 import { getLatestDailySummary } from "@/lib/daily-summary";
 import { getSharedLinks } from "@/lib/links";
+import { getLoveDrop, getLoveDrops } from "@/lib/love-drops";
 import { getRecentMemoryImages } from "@/lib/memories";
 import { getLoveNotes } from "@/lib/notes";
 import { getCoupleProfiles } from "@/lib/profiles";
@@ -60,7 +64,12 @@ const quickLinks = [
   },
 ];
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: Readonly<{
+  searchParams: Promise<{ loveDrop?: string }>;
+}>) {
+  const params = await searchParams;
   const [
     recentPhotos,
     loveNotes,
@@ -68,6 +77,7 @@ export default async function Home() {
     reminders,
     sharedLinks,
     dailySummary,
+    loveDrops,
   ] = await Promise.all([
     getRecentMemoryImages(40),
     getLoveNotes(),
@@ -75,12 +85,17 @@ export default async function Home() {
     getAnniversaryReminders(),
     getSharedLinks(),
     getLatestDailySummary(),
+    getLoveDrops(),
   ]);
+  const selectedLoveDrop = params.loveDrop
+    ? await getLoveDrop(params.loveDrop)
+    : null;
   const nextReminder = reminders.find((reminder) => reminder.next_occurrence_at);
   const favoriteLink = sharedLinks[0];
 
   return (
     <PageShell>
+      <LoveDropOverlay drop={selectedLoveDrop} />
       <section className="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-12 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="max-w-2xl">
 
@@ -191,8 +206,6 @@ export default async function Home() {
         </Link>
       </section>
 
-      <DailySummaryCard summary={dailySummary} />
-
       <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8">
         <div className="rounded-3xl border border-[#FFD6E8] bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -220,6 +233,8 @@ export default async function Home() {
         </div>
       </section>
 
+      <LoveDropsHome drops={loveDrops} />
+
       <section className="mx-auto w-full max-w-6xl px-5 pb-16 sm:px-8">
         <div className="rounded-3xl border border-[#FFD6E8] bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -246,6 +261,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <DailySummaryCard summary={dailySummary} />
     </PageShell>
   );
 }

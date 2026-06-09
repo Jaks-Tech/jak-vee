@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { db } from "@/lib/db";
+import { hasPrivateMemoriesAccess } from "@/lib/private-memories";
 
 type MediaRow = {
   id: string;
@@ -10,6 +11,7 @@ type MediaRow = {
   media_type: string;
   file_name: string | null;
   content_type: string | null;
+  is_private: boolean;
 };
 
 function cleanFileName(fileName: string | null) {
@@ -54,9 +56,17 @@ export async function GET(
 
   const result = await db.query<MediaRow>(
     `
-      select id, bucket_id, storage_path, media_type, file_name, content_type
-      from public.memory_media
-      where id = $1
+      select
+        mm.id,
+        mm.bucket_id,
+        mm.storage_path,
+        mm.media_type,
+        mm.file_name,
+        mm.content_type,
+        m.is_private
+      from public.memory_media mm
+      join public.memories m on m.id = mm.memory_id
+      where mm.id = $1
       limit 1
     `,
     [mediaId],
@@ -65,6 +75,10 @@ export async function GET(
   const media = result.rows[0];
   if (!media) {
     return NextResponse.json({ error: "Media not found" }, { status: 404 });
+  }
+
+  if (media.is_private && !(await hasPrivateMemoriesAccess())) {
+    return NextResponse.json({ error: "Private folder locked" }, { status: 403 });
   }
 
   const supabaseAdmin = createClient(supabaseUrl, serviceKey);

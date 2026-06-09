@@ -141,6 +141,19 @@ export const adminEntities: AdminEntity[] = [
     },
   },
   {
+    key: "love_drops",
+    title: "Love Drops",
+    table: "public.love_drops",
+    orderBy: "created_at desc",
+    fields: [
+      { name: "recipient_name", label: "Recipient", required: true },
+      { name: "title", label: "Title", required: true },
+      { name: "body", label: "Message", type: "textarea", required: true },
+      { name: "time_label", label: "Time label" },
+    ],
+    createDefaults: { recipient_name: "Vee" },
+  },
+  {
     key: "couple_profiles",
     title: "Profiles",
     table: "public.couple_profiles",

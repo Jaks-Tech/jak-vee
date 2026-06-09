@@ -25,6 +25,7 @@ export type MemoryRecord = {
   cover_path: string | null;
   author_name: string;
   is_favorite: boolean;
+  tags: string[];
   created_at: string;
   media: MemoryMedia[];
 };
@@ -65,7 +66,7 @@ export async function getRecentMemoryImages(limit = 4) {
       m.title as memory_title
     from public.memory_media mm
     join public.memories m on m.id = mm.memory_id
-    where mm.media_type = 'image'
+    where mm.media_type = 'image' and m.is_private = false
     order by m.created_at desc, mm.sort_order asc, mm.created_at desc
     limit $1
   `, [limit]);
@@ -101,7 +102,7 @@ export async function getRecentMemoryImages(limit = 4) {
   );
 }
 
-export async function getMemories() {
+async function getMemoryRows(isPrivate: boolean) {
   const result = await db.query<MemoryRow>(`
     select
       m.id,
@@ -113,6 +114,7 @@ export async function getMemories() {
       m.cover_path,
       m.author_name,
       m.is_favorite,
+      m.tags,
       m.created_at,
       coalesce(
         json_agg(
@@ -133,10 +135,11 @@ export async function getMemories() {
       ) as media
     from public.memories m
     left join public.memory_media mm on mm.memory_id = m.id
+    where m.is_private = $1
     group by m.id
     order by m.created_at desc
     limit 50
-  `);
+  `, [isPrivate]);
 
   return result.rows.map((memory) => ({
       ...memory,
@@ -144,6 +147,7 @@ export async function getMemories() {
       memory_date: memory.memory_date
         ? new Date(memory.memory_date).toISOString().slice(0, 10)
         : null,
+      tags: memory.tags ?? [],
       media: memory.media.map((media) => ({
         ...media,
         created_at: new Date(media.created_at).toISOString(),
@@ -151,4 +155,12 @@ export async function getMemories() {
         download_url: `/api/memories/media/${media.id}?download=1`,
       })),
     }));
+}
+
+export async function getMemories() {
+  return getMemoryRows(false);
+}
+
+export async function getPrivateMemories() {
+  return getMemoryRows(true);
 }

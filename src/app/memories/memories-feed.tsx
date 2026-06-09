@@ -2,6 +2,7 @@
 
 import { Download, Expand, FileText, Play, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Interactions } from "@/components/interactions";
 import { supabase } from "@/lib/supabase";
 import type { MemoryMedia, MemoryRecord } from "@/lib/memories";
 
@@ -48,11 +49,15 @@ function formatFileSize(size: number | null) {
 function MediaTile({
   media,
   title,
+  memoryId,
+  pathBase,
   onPreview,
   isPrimary = false,
 }: Readonly<{
   media: MemoryMedia;
   title: string;
+  memoryId: string;
+  pathBase: string;
   onPreview: (media: MemoryMedia) => void;
   isPrimary?: boolean;
 }>) {
@@ -123,6 +128,15 @@ function MediaTile({
         >
           <Download size={15} />
         </a>
+      </div>
+      <div className="px-3 pb-3">
+        <Interactions
+          targetType="memory_media"
+          targetId={media.id}
+          path={`${pathBase}?item=${memoryId}&media=${media.id}`}
+          title={label}
+          compact
+        />
       </div>
     </div>
   );
@@ -195,9 +209,15 @@ function PreviewOverlay({
 export function MemoriesFeed({
   initialMemories,
   currentPerson,
+  apiEndpoint = "/api/memories",
+  heading = "Our Memories",
+  pathBase = "/memories",
 }: Readonly<{
   initialMemories: MemoryRecord[];
   currentPerson?: string;
+  apiEndpoint?: string;
+  heading?: string;
+  pathBase?: string;
 }>) {
   const [memories, setMemories] = useState(initialMemories);
   const [filter, setFilter] = useState("all");
@@ -212,7 +232,7 @@ export function MemoriesFeed({
     let isMounted = true;
 
     async function refresh() {
-      const response = await fetch("/api/memories", { cache: "no-store" });
+      const response = await fetch(apiEndpoint, { cache: "no-store" });
       if (!response.ok || !isMounted) return;
       setMemories(await response.json());
       setLastSyncedAt(new Date());
@@ -256,7 +276,7 @@ export function MemoriesFeed({
       window.removeEventListener("focus", refreshOnFocus);
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [apiEndpoint]);
 
   const visibleMemories = useMemo(() => {
     if (filter === "all") return memories;
@@ -273,7 +293,7 @@ export function MemoriesFeed({
     <section className="rounded-3xl border border-[#FFD6E8] bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-[#a1435e]">Our Memories</p>
+          <p className="text-sm font-semibold text-[#a1435e]">{heading}</p>
 
         </div>
         <p className="rounded-full bg-[#FFF7FA] px-3 py-2 text-xs font-semibold text-[#8c4058]">
@@ -348,6 +368,24 @@ export function MemoriesFeed({
                       .join(" - ")}
                   </p>
                 ) : null}
+                {memory.tags.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {memory.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#a1435e] ring-1 ring-[#FFD6E8]"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+                <Interactions
+                  targetType="memory"
+                  targetId={memory.id}
+                  path={`${pathBase}?item=${memory.id}`}
+                  title={memory.title}
+                />
               </div>
 
               {memory.media.length > 0 ? (
@@ -357,6 +395,8 @@ export function MemoriesFeed({
                       key={media.id}
                       media={media}
                       title={memory.title}
+                      memoryId={memory.id}
+                      pathBase={pathBase}
                       isPrimary={index === 0}
                       onPreview={(selectedMedia) =>
                         setPreview({ media: selectedMedia, title: memory.title })

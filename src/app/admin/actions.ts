@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { getAdminEntity } from "@/lib/admin";
+import { createLoveDrop } from "@/lib/love-drops";
 
 function readText(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -123,4 +124,15 @@ export async function deleteAdminRow(formData: FormData) {
   }
 
   redirectBack("deleted");
+}
+
+export async function testLoveDrop() {
+  try {
+    await createLoveDrop({ notify: true });
+  } catch (error) {
+    console.error(error);
+    redirectBack("error");
+  }
+
+  redirectBack("love-drop");
 }

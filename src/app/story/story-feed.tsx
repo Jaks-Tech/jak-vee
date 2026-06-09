@@ -1,4 +1,5 @@
 import { BookOpen, Heart, Sparkles } from "lucide-react";
+import { Interactions } from "@/components/interactions";
 import type { StoryChapterRecord } from "@/lib/story";
 
 function formatDate(date: string | null, createdAt: string) {
@@ -75,6 +76,12 @@ export function StoryFeed({
                   {chapter.mood}
                 </p>
               ) : null}
+              <Interactions
+                targetType="story_chapter"
+                targetId={chapter.id}
+                path={`/story?item=${chapter.id}`}
+                title={chapter.title}
+              />
             </div>
           </article>
         ))}

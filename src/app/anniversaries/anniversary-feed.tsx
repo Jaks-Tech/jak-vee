@@ -2,6 +2,7 @@
 
 import { CalendarHeart, Mail, Repeat, Timer } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Interactions } from "@/components/interactions";
 import type { AnniversaryRecord } from "@/lib/anniversaries";
 
 function formatDate(date: string) {
@@ -125,6 +126,12 @@ export function AnniversaryFeed({
                 </span>
               ) : null}
             </div>
+            <Interactions
+              targetType="anniversary"
+              targetId={event.id}
+              path={`/anniversaries?item=${event.id}`}
+              title={event.title}
+            />
           </article>
         ))}
       </div>

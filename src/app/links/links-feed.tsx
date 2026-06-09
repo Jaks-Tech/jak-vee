@@ -12,6 +12,7 @@ import {
   Play,
 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Interactions } from "@/components/interactions";
 import type { SharedLinkRecord } from "@/lib/links";
 import { LinkPreviewCard } from "./link-preview-card";
 
@@ -143,6 +144,12 @@ function LinkCard({
           Saved without a link.
         </p>
       )}
+      <Interactions
+        targetType="shared_link"
+        targetId={item.id}
+        path={`/links?item=${item.id}`}
+        title={item.title}
+      />
     </article>
   );
 }

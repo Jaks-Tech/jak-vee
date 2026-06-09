@@ -1,4 +1,5 @@
 import { CalendarDays, Pin } from "lucide-react";
+import { Interactions } from "@/components/interactions";
 import type { LoveNoteRecord } from "@/lib/notes";
 
 function formatDate(date: string) {
@@ -71,6 +72,12 @@ export function NotesFeed({
               </span>
             ) : null}
           </div>
+          <Interactions
+            targetType="love_note"
+            targetId={note.id}
+            path={`/notes?item=${note.id}`}
+            title={note.title}
+          />
         </article>
       ))}
     </div>

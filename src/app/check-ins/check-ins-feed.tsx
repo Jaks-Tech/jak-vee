@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Interactions } from "@/components/interactions";
 import { dailyCheckIns } from "@/data/content";
 import { supabase } from "@/lib/supabase";
 
@@ -223,6 +224,12 @@ export function CheckInsFeed({
                       .join(" · ")}
                   </p>
                 ) : null}
+                <Interactions
+                  targetType="daily_checkin"
+                  targetId={checkIn.id}
+                  path={`/check-ins?item=${checkIn.id}`}
+                  title={checkIn.title}
+                />
               </article>
             ))
           ) : (

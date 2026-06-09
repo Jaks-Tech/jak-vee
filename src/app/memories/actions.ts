@@ -35,12 +35,43 @@ function mediaTypeFor(file: File) {
   return "file";
 }
 
+function readTags(formData: FormData) {
+  return readText(formData, "tags")
+    .split(/[,\n#]+/)
+    .map((tag) => tag.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ""))
+    .filter(Boolean)
+    .slice(0, 12);
+}
+
 function extensionFor(fileName: string) {
   const extension = fileName.includes(".") ? fileName.split(".").pop() : null;
   return extension?.replace(/[^a-zA-Z0-9]/g, "").slice(0, 12) || "upload";
 }
 
 export async function createMemory(formData: FormData) {
+  return createMemoryRecord(formData, {
+    isPrivate: false,
+    bucketId: "memories-media",
+    redirectPath: "/memories",
+  });
+}
+
+export async function createPrivateMemory(formData: FormData) {
+  return createMemoryRecord(formData, {
+    isPrivate: true,
+    bucketId: "private-memories-media",
+    redirectPath: "/memories/private",
+  });
+}
+
+async function createMemoryRecord(
+  formData: FormData,
+  {
+    isPrivate,
+    bucketId,
+    redirectPath,
+  }: { isPrivate: boolean; bucketId: string; redirectPath: string },
+) {
   const cookieStore = await cookies();
   const authorName = cookieStore.get("jak_vee_person")?.value;
   const title = readText(formData, "title");
@@ -49,6 +80,7 @@ export async function createMemory(formData: FormData) {
   const memoryDate = readText(formData, "memory_date") || null;
   const locationText = readText(formData, "location_text") || null;
   const caption = readText(formData, "caption") || null;
+  const tags = readTags(formData);
   const files = formData
     .getAll("media")
     .filter((file): file is File => file instanceof File && file.size > 0);
@@ -58,7 +90,7 @@ export async function createMemory(formData: FormData) {
   }
 
   if (!title || !allowedTypes.has(memoryType)) {
-    redirect("/memories?error=missing");
+    redirect(`${redirectPath}?error=missing`);
   }
 
   const client = await db.connect();
@@ -74,12 +106,23 @@ export async function createMemory(formData: FormData) {
           memory_type,
           memory_date,
           location_text,
-          author_name
+          author_name,
+          is_private,
+          tags
         )
-        values ($1, $2, $3, $4, $5, $6)
+        values ($1, $2, $3, $4, $5, $6, $7, $8)
         returning id
       `,
-      [title, body, memoryType, memoryDate, locationText, authorName],
+      [
+        title,
+        body,
+        memoryType,
+        memoryDate,
+        locationText,
+        authorName,
+        isPrivate,
+        tags,
+      ],
     );
 
     const memoryId = memoryResult.rows[0].id;
@@ -100,7 +143,7 @@ export async function createMemory(formData: FormData) {
         const mediaType = mediaTypeFor(file);
 
         const upload = await supabaseAdmin.storage
-          .from("memories-media")
+          .from(bucketId)
           .upload(storagePath, file, {
             contentType: file.type || "application/octet-stream",
             upsert: false,
@@ -124,11 +167,12 @@ export async function createMemory(formData: FormData) {
               file_size,
               sort_order
             )
-            values ($1, $2, 'memories-media', $3, $4, $5, $6, $7, $8, $9)
+            values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
           `,
           [
             memoryId,
             authorName,
+            bucketId,
             storagePath,
             mediaType,
             caption,
@@ -156,16 +200,16 @@ export async function createMemory(formData: FormData) {
       sourceType: "Memories",
       sourceTitle: title,
       body: [body, caption, locationText].filter(Boolean).join("\n"),
-      path: "/memories",
+      path: redirectPath,
     });
   } catch (error) {
     await client.query("rollback");
     console.error(error);
-    redirect("/memories?error=upload");
+    redirect(`${redirectPath}?error=upload`);
   } finally {
     client.release();
   }
 
-  revalidatePath("/memories");
-  redirect("/memories?saved=1");
+  revalidatePath(redirectPath);
+  redirect(`${redirectPath}?saved=1`);
 }

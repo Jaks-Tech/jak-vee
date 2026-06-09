@@ -1,5 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+function safeNextPath(value: string) {
+  if (!value.startsWith("/") || value.startsWith("//")) return "/";
+  return value;
+}
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const username = String(formData.get("username") ?? "");
@@ -22,11 +27,11 @@ export async function POST(request: NextRequest) {
   if (!isValid) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("error", "1");
-    loginUrl.searchParams.set("next", next.startsWith("/") ? next : "/");
+    loginUrl.searchParams.set("next", safeNextPath(next));
     return NextResponse.redirect(loginUrl, 303);
   }
 
-  const redirectUrl = new URL(next.startsWith("/") ? next : "/", request.url);
+  const redirectUrl = new URL(safeNextPath(next), request.url);
   const response = NextResponse.redirect(redirectUrl, 303);
 
   response.cookies.set("jak_vee_session", sessionSecret!, {
