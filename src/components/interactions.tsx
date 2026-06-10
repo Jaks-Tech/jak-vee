@@ -2,6 +2,7 @@
 
 import { Heart, MessageCircle, Send, Share2 } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { MentionField } from "@/components/mention-field";
 
 type CommentRecord = {
   id: string;
@@ -135,13 +136,13 @@ export function Interactions({
         compact ? "text-xs" : "text-sm",
       ].join(" ")}
     >
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={() => void toggleLike()}
           disabled={isBusy}
           className={[
-            "inline-flex items-center gap-2 rounded-full px-3 py-2 font-semibold transition",
+            "inline-flex min-w-0 items-center gap-1.5 rounded-full px-3 py-2 font-semibold transition",
             state.liked
               ? "bg-[#FF8FAB] text-white"
               : "bg-white text-[#8c4058] ring-1 ring-[#FFD6E8]",
@@ -154,7 +155,7 @@ export function Interactions({
         <button
           type="button"
           onClick={() => setCommentOpen((open) => !open)}
-          className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 font-semibold text-[#8c4058] ring-1 ring-[#FFD6E8]"
+          className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-white px-3 py-2 font-semibold text-[#8c4058] ring-1 ring-[#FFD6E8]"
         >
           <MessageCircle size={15} />
           {state.comments.length}
@@ -164,7 +165,7 @@ export function Interactions({
           type="button"
           onClick={() => void shareItem()}
           disabled={isBusy}
-          className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 font-semibold text-[#8c4058] ring-1 ring-[#FFD6E8]"
+          className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-white px-3 py-2 font-semibold text-[#8c4058] ring-1 ring-[#FFD6E8]"
         >
           <Share2 size={15} />
           Share {state.shares > 0 ? state.shares : ""}
@@ -207,9 +208,10 @@ export function Interactions({
           )}
 
           <form onSubmit={(event) => void addComment(event)} className="flex gap-2">
-            <input
+            <MentionField
+              as="input"
               value={body}
-              onChange={(event) => setBody(event.target.value)}
+              onChange={setBody}
               placeholder="Write a comment or mention @vee..."
               className="min-w-0 flex-1 rounded-full border border-[#FFD6E8] bg-white px-4 py-2 text-sm outline-none placeholder:text-[#9c6b7b] focus:border-[#FF8FAB]"
             />

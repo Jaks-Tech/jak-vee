@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Interactions } from "@/components/interactions";
+import { MentionField } from "@/components/mention-field";
 import { supabase } from "@/lib/supabase";
 import type { ChatMessageRecord } from "@/lib/chat";
 
@@ -412,10 +413,10 @@ export function ChatRoom({
         ) : null}
 
         <div className="flex gap-2 rounded-3xl border border-[#FFD6E8] bg-[#FFF7FA] p-2">
-          <textarea
+          <MentionField
             aria-label="Write a private chat message"
             value={body}
-            onChange={(event) => setBody(event.target.value)}
+            onChange={setBody}
             onKeyDown={handleComposerKeyDown}
             placeholder="Send a message, direction, idea, or question..."
             rows={2}

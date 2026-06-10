@@ -2,6 +2,7 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
+import { MentionField } from "@/components/mention-field";
 import { createStoryChapter } from "./actions";
 
 const chapterTypes = [
@@ -19,6 +20,7 @@ const chapterTypes = [
 
 export function StoryComposer() {
   const [selectedType, setSelectedType] = useState("Chapter");
+  const [body, setBody] = useState("");
 
   return (
     <form action={createStoryChapter} className="mt-5 grid gap-3">
@@ -67,8 +69,10 @@ export function StoryComposer() {
         />
       </div>
 
-      <textarea
+      <MentionField
         name="body"
+        value={body}
+        onChange={setBody}
         placeholder="Write this part of the story..."
         className="min-h-40 resize-none rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
       />

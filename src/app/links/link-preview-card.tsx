@@ -40,7 +40,7 @@ export function LinkPreviewCard({ url }: Readonly<{ url: string }>) {
       href={url}
       target="_blank"
       rel="noreferrer"
-      className="mt-4 block overflow-hidden rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA]"
+      className="mt-4 block min-w-0 max-w-full overflow-hidden rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA]"
     >
       {preview.image ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -50,15 +50,17 @@ export function LinkPreviewCard({ url }: Readonly<{ url: string }>) {
           className="h-36 w-full object-cover"
         />
       ) : null}
-      <div className="p-3">
+      <div className="min-w-0 p-3">
         {preview.site ? (
-          <p className="text-xs font-semibold text-[#a1435e]">{preview.site}</p>
+          <p className="break-words text-xs font-semibold text-[#a1435e]">
+            {preview.site}
+          </p>
         ) : null}
-        <p className="mt-1 line-clamp-2 text-sm font-semibold text-[#2d1b22]">
+        <p className="mt-1 line-clamp-2 min-w-0 break-words text-sm font-semibold text-[#2d1b22]">
           {preview.title}
         </p>
         {preview.description ? (
-          <p className="mt-2 line-clamp-3 text-xs leading-5 text-[#765061]">
+          <p className="mt-2 line-clamp-3 min-w-0 break-words text-xs leading-5 text-[#765061]">
             {preview.description}
           </p>
         ) : null}

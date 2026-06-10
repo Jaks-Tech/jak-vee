@@ -15,10 +15,17 @@ export function LinksWorkspace({
   currentPerson?: string;
 }>) {
   const [isComposerOpen, setIsComposerOpen] = useState(false);
+  const [savedLinks, setSavedLinks] = useState(links);
+
+  async function refreshSavedLinks() {
+    const response = await fetch("/api/links", { cache: "no-store" });
+    if (!response.ok) return;
+    setSavedLinks(await response.json());
+  }
 
   return (
     <section className="grid gap-6">
-      <LinksAiPanel />
+      <LinksAiPanel onRefreshSaved={refreshSavedLinks} />
 
       <div className="flex justify-end">
         {!isComposerOpen ? (
@@ -56,10 +63,10 @@ export function LinksWorkspace({
             <LinksComposer />
           </div>
 
-          <LinksFeed links={links} currentPerson={currentPerson} />
+          <LinksFeed links={savedLinks} currentPerson={currentPerson} />
         </section>
       ) : (
-        <LinksFeed links={links} currentPerson={currentPerson} />
+        <LinksFeed links={savedLinks} currentPerson={currentPerson} />
       )}
     </section>
   );

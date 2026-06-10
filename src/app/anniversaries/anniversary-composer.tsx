@@ -2,6 +2,7 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
+import { MentionField } from "@/components/mention-field";
 import { createAnniversaryReminder } from "./actions";
 
 const eventTypes = [
@@ -19,6 +20,8 @@ const eventTypes = [
 export function AnniversaryComposer() {
   const [eventType, setEventType] = useState("Anniversary");
   const [emailEnabled, setEmailEnabled] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
 
   return (
     <form action={createAnniversaryReminder} className="mt-5 grid gap-3">
@@ -88,8 +91,10 @@ export function AnniversaryComposer() {
         </select>
       </label>
 
-      <textarea
+      <MentionField
         name="notes"
+        value={notes}
+        onChange={setNotes}
         placeholder="Notes about this day"
         className="min-h-28 resize-none rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
       />
@@ -118,8 +123,10 @@ export function AnniversaryComposer() {
             placeholder="Email subject"
             className="rounded-2xl border border-[#FFD6E8] bg-white px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
           />
-          <textarea
+          <MentionField
             name="email_message"
+            value={emailMessage}
+            onChange={setEmailMessage}
             placeholder="Email message"
             className="min-h-24 resize-none rounded-2xl border border-[#FFD6E8] bg-white px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
           />

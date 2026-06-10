@@ -23,10 +23,10 @@ export function RotatingLoveNotes({ notes }: { notes: LoveNote[] }) {
   const shuffledNotes = useMemo(() => shuffleNotes(notes), [notes]);
 
   useEffect(() => {
-    if (shuffledNotes.length <= 3) return;
+    if (shuffledNotes.length <= 1) return;
 
     const interval = setInterval(() => {
-      setIndex((current) => (current + 3) % shuffledNotes.length);
+      setIndex((current) => (current + 1) % shuffledNotes.length);
     }, 7000);
 
     return () => clearInterval(interval);

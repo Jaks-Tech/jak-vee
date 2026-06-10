@@ -91,7 +91,7 @@ function LinkCard({
   const Icon = iconFor(item.link_type);
 
   return (
-    <article className="mb-4 inline-block w-full break-inside-avoid rounded-3xl border border-[#FFD6E8] bg-white p-5 align-top shadow-sm">
+    <article className="mb-4 inline-block w-full min-w-0 break-inside-avoid overflow-hidden rounded-3xl border border-[#FFD6E8] bg-white p-4 align-top shadow-sm sm:p-5">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#FFD6E8] text-[#8c4058]">
           <Icon size={20} />
@@ -102,7 +102,7 @@ function LinkCard({
           </span>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex min-w-0 flex-wrap items-center justify-between gap-2">
         <p className="text-xs font-semibold uppercase tracking-wide text-[#a1435e]">
           {item.link_type}
         </p>
@@ -110,11 +110,11 @@ function LinkCard({
           {formatDate(item.created_at)}
         </p>
       </div>
-      <h2 className="mt-2 text-xl font-semibold text-[#2d1b22]">
+      <h2 className="mt-2 min-w-0 break-words text-xl font-semibold text-[#2d1b22]">
         {item.title}
       </h2>
       {item.source_title ? (
-        <p className="mt-2 text-sm font-semibold text-[#8c4058]">
+        <p className="mt-2 min-w-0 break-words text-sm font-semibold text-[#8c4058]">
           {item.source_title}
         </p>
       ) : null}
@@ -122,7 +122,7 @@ function LinkCard({
         {displayAuthor(item.author_name, currentPerson)}
       </p>
       {item.description ? (
-        <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#765061]">
+        <p className="mt-3 min-w-0 overflow-hidden break-words text-sm leading-6 text-[#765061]">
           {item.description}
         </p>
       ) : null}
@@ -133,7 +133,7 @@ function LinkCard({
             href={item.url}
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#FFF7FA] px-4 py-2 text-sm font-semibold text-[#8c4058]"
+            className="mt-4 inline-flex max-w-full items-center gap-2 rounded-full bg-[#FFF7FA] px-4 py-2 text-sm font-semibold text-[#8c4058]"
           >
             <ExternalLink size={15} />
             Open
@@ -188,7 +188,7 @@ export function LinksFeed({
     activeCategory === "all" ? categories : categories.filter((category) => category === activeCategory);
 
   return (
-    <section className="grid gap-5">
+    <section className="grid min-w-0 gap-5">
       <div className="rounded-3xl border border-[#FFD6E8] bg-white p-4 shadow-sm">
         <label className="grid gap-2 text-sm font-semibold text-[#704153]">
           Category
@@ -213,25 +213,25 @@ export function LinksFeed({
         return (
           <section
             key={category}
-            className="rounded-3xl border border-[#FFD6E8] bg-[#FFF7FA] p-4 shadow-sm"
+            className="min-w-0 overflow-hidden rounded-3xl border border-[#FFD6E8] bg-[#FFF7FA] p-3 shadow-sm sm:p-4"
           >
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
+            <div className="mb-4 flex min-w-0 items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#8c4058]">
                   <Icon size={18} />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-[#a1435e]">
                     {category}
                   </p>
-                  <h2 className="text-2xl font-semibold text-[#2d1b22]">
+                  <h2 className="break-words text-2xl font-semibold text-[#2d1b22]">
                     {grouped[category].length} saved
                   </h2>
                 </div>
               </div>
             </div>
 
-            <div className="columns-1 gap-4 md:columns-2">
+            <div className="min-w-0 columns-1 gap-4 md:columns-2">
               {grouped[category].map((item) => (
                 <LinkCard
                   key={item.id}

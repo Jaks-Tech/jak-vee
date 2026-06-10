@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { DailySummaryCard } from "@/components/daily-summary-card";
+import { RotatingFavorites } from "@/components/rotating-favorites";
 import { RotatingMemories } from "@/components/rotating-memories";
 import { RotatingLoveNotes } from "@/components/rotating-love-notes";
 import { RotatingSpecialDates } from "@/components/rotating-special-dates";
@@ -91,8 +92,6 @@ export default async function Home({
   const selectedLoveDrop = params.loveDrop
     ? await getLoveDrop(params.loveDrop)
     : null;
-  const favoriteLink = sharedLinks[0];
-
   return (
     <PageShell>
       <LoveDropOverlay drop={selectedLoveDrop} />
@@ -177,20 +176,7 @@ export default async function Home({
       <section className="mx-auto grid w-full max-w-6xl gap-4 px-5 pb-16 sm:px-8 md:grid-cols-2">
         <RotatingSpecialDates reminders={reminders} />
 
-        <Link
-          href="/links"
-          className="rounded-3xl border border-[#FFD6E8] bg-white p-6 shadow-sm"
-        >
-          <p className="text-sm font-semibold text-[#a1435e]">Saved favorite</p>
-          <h2 className="mt-3 text-2xl font-semibold text-[#2d1b22]">
-            {favoriteLink?.title ?? "Save a song, movie, or podcast"}
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-[#765061]">
-            {favoriteLink
-              ? `${favoriteLink.link_type}${favoriteLink.source_title ? ` - ${favoriteLink.source_title}` : ""}`
-              : "Keep things you want each other to hear, watch, read, or visit."}
-          </p>
-        </Link>
+        <RotatingFavorites links={sharedLinks} />
       </section>
 
       <section className="mx-auto max-w-6xl px-5 pb-16 sm:px-8">

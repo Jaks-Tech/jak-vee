@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Send, X } from "lucide-react";
+import { MentionField } from "@/components/mention-field";
 import { dailyCheckIns } from "@/data/content";
 import { createCheckIn } from "./actions";
 
@@ -24,6 +25,7 @@ export function CheckInComposer({
   onClose?: () => void;
 }>) {
   const [selectedKey, setSelectedKey] = useState("");
+  const [body, setBody] = useState("");
 
   const selected = useMemo(
     () => promptOptions.find((item) => item.key === selectedKey),
@@ -95,9 +97,11 @@ export function CheckInComposer({
               />
             )}
 
-            <textarea
+            <MentionField
               name="body"
               required
+              value={body}
+              onChange={setBody}
               placeholder="Write your update..."
               className="min-h-32 resize-none rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
             />

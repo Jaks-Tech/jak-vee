@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Camera, FileText, ImagePlus, Send, Sparkles, Video, X } from "lucide-react";
+import { MentionField } from "@/components/mention-field";
 import { createMemory } from "./actions";
 
 const memoryKinds = [
@@ -343,11 +344,11 @@ export function MemoryComposer({
           className="rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
         />
 
-        <textarea
+        <MentionField
           name="body"
           required={selected.needsBody}
           value={body}
-          onChange={(event) => setBody(event.target.value)}
+          onChange={setBody}
           placeholder={selected.bodyPlaceholder}
           className="min-h-28 resize-none rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
         />

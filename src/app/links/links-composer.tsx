@@ -2,6 +2,7 @@
 
 import { Send } from "lucide-react";
 import { useState } from "react";
+import { MentionField } from "@/components/mention-field";
 import { createSharedLink } from "./actions";
 
 const linkTypes = [
@@ -20,6 +21,7 @@ const linkTypes = [
 
 export function LinksComposer() {
   const [selectedType, setSelectedType] = useState("Song");
+  const [description, setDescription] = useState("");
 
   return (
     <form action={createSharedLink} className="mt-5 grid gap-3">
@@ -73,8 +75,10 @@ export function LinksComposer() {
         placeholder="Optional link"
         className="rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
       />
-      <textarea
+      <MentionField
         name="description"
+        value={description}
+        onChange={setDescription}
         placeholder="Why are we saving this?"
         className="min-h-28 resize-none rounded-2xl border border-[#FFD6E8] bg-[#FFF7FA] px-4 py-3 text-sm outline-none placeholder:text-[#9c6b7b]"
       />
