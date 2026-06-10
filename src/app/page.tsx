@@ -16,6 +16,7 @@ import { PageShell } from "@/components/page-shell";
 import { DailySummaryCard } from "@/components/daily-summary-card";
 import { RotatingMemories } from "@/components/rotating-memories";
 import { RotatingLoveNotes } from "@/components/rotating-love-notes";
+import { RotatingSpecialDates } from "@/components/rotating-special-dates";
 import { LoveDropOverlay } from "@/components/love-drop-overlay";
 import { LoveDropsHome } from "@/components/love-drops-home";
 import { getAnniversaryReminders } from "@/lib/anniversaries";
@@ -90,7 +91,6 @@ export default async function Home({
   const selectedLoveDrop = params.loveDrop
     ? await getLoveDrop(params.loveDrop)
     : null;
-  const nextReminder = reminders.find((reminder) => reminder.next_occurrence_at);
   const favoriteLink = sharedLinks[0];
 
   return (
@@ -175,20 +175,7 @@ export default async function Home({
       </section>
 
       <section className="mx-auto grid w-full max-w-6xl gap-4 px-5 pb-16 sm:px-8 md:grid-cols-2">
-        <Link
-          href="/anniversaries"
-          className="rounded-3xl border border-[#FFD6E8] bg-white p-6 shadow-sm"
-        >
-          <p className="text-sm font-semibold text-[#a1435e]">Next special day</p>
-          <h2 className="mt-3 text-2xl font-semibold text-[#2d1b22]">
-            {nextReminder?.title ?? "Set up your next reminder"}
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-[#765061]">
-            {nextReminder
-              ? `${nextReminder.event_type} - ${nextReminder.date_value}`
-              : "Add anniversaries, dates, trips, birthdays, and surprises."}
-          </p>
-        </Link>
+        <RotatingSpecialDates reminders={reminders} />
 
         <Link
           href="/links"
